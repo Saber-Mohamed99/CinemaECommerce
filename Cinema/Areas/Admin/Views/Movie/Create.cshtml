@@ -1,0 +1,82 @@
+﻿@model MovieCreateVM
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h3 class="mb-4">Create new Movie</h3>
+
+            <form enctype="multipart/form-data" method="post">
+                <!-- Name -->
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" placeholder="Name" asp-for="Movie.Name">
+                    <span class="text-danger" asp-validation-for="Movie.Name"></span>
+
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Main Img</label>
+                    <input type="file" class="form-control" asp-for="Movie.MainImg">
+                    @* <span class="text-danger" asp-validation-for="Movie.MainImg"></span> *@
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">SubImg</label>
+                    <input type="file" class="form-control" asp-for="Movie.MovieSubImgs" multiple>
+                </div>
+                <!-- Description -->
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" rows="2" placeholder="Description" asp-for="Movie.Description"></textarea>
+                    <span class="text-danger" asp-validation-for="Movie.Description"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Price</label>
+                    <input type="text" class="form-control" placeholder="Price" asp-for="Movie.Price">
+                    <span class="text-danger" asp-validation-for="Movie.Price"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Date time</label>
+                    <input type="datetime-local" class="form-control" placeholder="Date" asp-for="Movie.Date">
+                    <span class="text-danger" asp-validation-for="Movie.Date"></span>
+                </div>
+               
+                <div class="col-md-3">
+                    <label class="form-label">Category</label>
+                    <select asp-for="Movie.CategoryId" class="form-select">
+                        @foreach (var item in Model.Categories)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Cinema</label>
+                    <select asp-for="Movie.CinemaId" class="form-select ">
+
+                        @foreach (var item in Model.Cinemas)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+                <!-- Status -->
+                <div class="mb-4">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" asp-for="Movie.Status">
+                        <option selected value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="btn btn-primary">
+                    Submit
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @* <partial name="_ValidationScriptsPartial.cshtml"/> *@
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+
+}

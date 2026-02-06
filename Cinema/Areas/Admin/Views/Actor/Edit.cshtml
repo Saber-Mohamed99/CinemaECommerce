@@ -1,0 +1,92 @@
+﻿@model ActorWithMovieVM
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">Edit Actor</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="Name" class="form-label">Actor Name</label>
+                    <input type="text" class="form-control" id="Name" name="Name"value="@Model.Actor.Name"
+                           >
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Actor Description</label>
+                    <textarea class="form-control" rows="2" name="Description">@Model.Actor.Description</textarea>
+
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Movie</label>
+                    <select name="MovieId" class="form-select">
+                        @foreach (var item in Model.Movies)
+                        {
+                            if (Model.Actor.MovieId == item.Id)
+                            {
+                                <option value="@item.Id" selected>@item.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Id">@item.Name</option>
+
+                            }
+
+                        }
+                    </select>
+                </div>
+                <div class="container mt-5">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+
+                            <div class="img-preview mb-3" id="previewBox">
+                                <img src="~/Imgs/ActorImgs/@Model.Actor.Img" />
+                            </div>
+
+                            <input type="file"
+                                   class="form-control"
+                                   accept="image/*"
+                                   onchange="previewImage(event)"
+                                   name="Img">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="/Admin/Actor/Index" class="btn btn-secondary">Back</a>
+                    <button type="submit" class="btn btn-success">Create Actor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function previewImage(event) {
+      const box = document.getElementById('previewBox');
+      box.innerHTML = "";
+
+      const img = document.createElement("img");
+      img.src = URL.createObjectURL(event.target.files[0]);
+
+      box.appendChild(img);
+    }
+</script>
+<style>
+    .img-preview {
+        width: 100%;
+        height: 380px;
+        border: 2px dashed #ccc;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: #f8f9fa;
+    }
+
+        .img-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+</style>
