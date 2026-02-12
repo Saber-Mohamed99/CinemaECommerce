@@ -2,4 +2,5 @@
 global using CinemaECommerce.Models;
 global using CinemaECommerce.Utilities;
 global using CinemaECommerce.ViewModels;
+global using CinemaECommerce.Repositories;
 

@@ -19,7 +19,7 @@
                 <div class="col-md-3">
                     <label class="form-label">Movies</label>
                     <select asp-for="Actor.MovieId" class="form-select">
-                        <option >All movies</option>
+                        <option value="">All movies</option>
                         @foreach (var item in Model.Movies)
                         {
                             <option value="@item.Id">@item.Name</option>
@@ -40,6 +40,7 @@
                                    accept="image/*"
                                    onchange="previewImage(event)"
                                    name="Img">
+                            
                         </div>
                     </div>
                 </div>
@@ -83,8 +84,6 @@
         }
 </style>
 @section Scripts {
-    @* <partial name="_ValidationScriptsPartial.cshtml"/> *@
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
-
+     <partial name="_ValidationScriptsPartial.cshtml"/> 
+   
 }

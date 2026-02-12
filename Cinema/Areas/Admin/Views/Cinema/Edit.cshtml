@@ -9,8 +9,9 @@
             <form method="post" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="Name" class="form-label">Cinema Name</label>
-                    <input type="text" class="form-control" id="Name" name="Name"value="@Model.Name"
+                    <input type="text" class="form-control" asp-for="Name"
                     placeholder="Enter cinema name">
+                    <span class="text-danger" asp-validation-for="Name"></span>
                 </div>
 
                 <div class="container mt-5">
@@ -26,6 +27,7 @@
                                    accept="image/*"
                                    onchange="previewImage(event)"
                                    name="Img">
+                            
                         </div>
                     </div>
                 </div>
@@ -68,3 +70,7 @@
             object-fit: cover;
         }
 </style>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial.cshtml" />
+
+}

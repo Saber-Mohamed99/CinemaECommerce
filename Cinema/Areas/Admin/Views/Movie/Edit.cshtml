@@ -5,6 +5,7 @@
             <h3 class="mb-4">Edit Movie</h3>
 
             <form enctype="multipart/form-data" method="post">
+                <input hidden asp-for="Movie.Id"/>
                 <!-- Name -->
                 <div class="mb-3">
                     <label class="form-label">Name</label>
@@ -31,11 +32,11 @@
                            class="form-control"
                            name="SubImg"
                            accept="image/*"
-                           onchange="previewImage(event)" multiple>
+                            multiple>
                 </div>
                 @foreach(var item in Model.MovieSubImgs)
                 {
-                        <img id="preview"
+                        <img 
                              src="~/Imgs/MovieImgs/SubImg/@item.SubImg"
                              alt="Preview Image"
                              style="max-width:200px;border:1px solid #ccc; padding:5px; border-radius:10px;" />
@@ -60,7 +61,7 @@
 
                 <div class="col-md-3">
                     <label class="form-label">Category</label>
-                    <select name="CategoryId" class="form-select">
+                    <select asp-for="Movie.CategoryId" class="form-select">
                         @foreach (var item in Model.Categories)
                         {
                             if (item.Id == Model.Movie.CategoryId)
@@ -76,7 +77,7 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Cinema</label>
-                    <select name="CinemaId" class="form-select ">
+                    <select asp-for="Movie.CinemaId" class="form-select ">
 
                         @foreach (var item in Model.Cinemas)
                         {
@@ -86,7 +87,7 @@
                             }
                             else
                             {
-                                <option selected value="@item.Id">@item.Name</option>
+                                <option  value="@item.Id">@item.Name</option>
                             }
 
                         }

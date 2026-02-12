@@ -1,23 +1,40 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CinemaECommerce;
+using CinemaECommerce.Models;
+using CinemaECommerce.Repositories.IRepositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
+using System.Threading.Tasks;
 
 namespace ActorECommerce.Areas.Admin.Controllers
 {
     [Area(SD.Admin_Area)]
     public class ActorController : Controller
     {
-        private ApplicationDbContext _context = new();
-        public IActionResult Index(string? name, int page = 1)
+        //private readonly ApplicationDbContext _context;//= new();
+
+        private readonly IStringLocalizer<LocalizationController> _localizer;
+        private readonly IRepository<Actor> _actorRepository;
+        private readonly IRepository<Movie> _movieRepository;
+        public ActorController(IStringLocalizer<LocalizationController> localizer,
+            IRepository<Actor> actorRepository,
+            IRepository<Movie> movieRepository)
         {
-            var actors = _context.Actors.AsNoTracking().AsQueryable();
+            _localizer = localizer;
+            _actorRepository = actorRepository;
+            _movieRepository = movieRepository;
+        }
+        public async Task<IActionResult> Index(string? name, int page = 1)
+        {
+            var actors =await _actorRepository.GetAsync(tracked: false);
             if (name is not null)
-                actors = actors.Where(e => e.Name.ToLower().Contains(name.ToLower()));
+                actors = actors.Where(e => e.Name.ToLower().Contains(name.ToLower())).ToList();
             if (page < 1)
                 page = 1;
 
             int currentpage = page;
             double totalpages = Math.Ceiling(actors.Count() / 5.0);
-            actors = actors.Skip((page - 1) * 5).Take(5);
+            actors = actors.Skip((page - 1) * 5).Take(5).ToList();
             return View(new ActorVM
             {
                 ActorModel = actors.AsEnumerable(),
@@ -28,23 +45,25 @@ namespace ActorECommerce.Areas.Admin.Controllers
 
         }
         [HttpGet]
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            var movies=_context.Movies.AsNoTracking().AsQueryable();
+            var movies=await _movieRepository.GetAsync(tracked: false);
             return View(new CreateActorVM()
             {
                 Movies = movies,
+                Actor =new Actor()
             });
         }
         [HttpPost]
-        public ActionResult Create(Actor actor, IFormFile? img)
+        public async Task<ActionResult> Create(Actor actor, IFormFile? img)
         {
             ModelState.Remove("actor.Movie");
             ModelState.Remove("actor.Img");
             if(!ModelState.IsValid)
                 return View(new CreateActorVM()
                 {
-                    Movies = _context.Movies.AsNoTracking().AsQueryable()
+                    Movies = await _movieRepository.GetAsync(tracked: false),
+                    Actor=actor,
                 });
             if (img is not null && img.Length > 0)
             {
@@ -58,8 +77,9 @@ namespace ActorECommerce.Areas.Admin.Controllers
                 }
                 actor.Img = newfilename;
             }
-            _context.Actors.Add(actor);
-            _context.SaveChanges();
+            await _actorRepository.CreateAsync(actor);
+            await _actorRepository.CommitAsync();
+            TempData["notification"] = _localizer["AddActor"].Value;
             return RedirectToAction(nameof(Index));
         }
       
@@ -68,10 +88,10 @@ namespace ActorECommerce.Areas.Admin.Controllers
             return View();
         }
         [HttpGet]
-        public IActionResult Edit([FromRoute] int id)
+        public async Task<IActionResult> Edit([FromRoute] int id)
         {
-            var actor = _context.Actors.Find(id);
-            var movies = _context.Movies.AsNoTracking().AsQueryable();
+            var actor =await _actorRepository.GetOneAsync(e=>e.Id == id);
+            var movies =await _movieRepository.GetAsync(tracked:false);
             if (actor is null)
                 return RedirectToAction(nameof(Not_Found));
             return View( new ActorWithMovieVM()
@@ -82,9 +102,13 @@ namespace ActorECommerce.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Actor actor, IFormFile? img)
+        public async Task<IActionResult> Edit(Actor actor, IFormFile? img)
         {
-            var actorinDB = _context.Actors.AsNoTracking().FirstOrDefault(e => e.Id == actor.Id);
+            ModelState.Remove("actor.Movie");
+            ModelState.Remove("actor.Img");
+            if (!ModelState.IsValid)
+                return View(actor);
+            var actorinDB =await _actorRepository.GetOneAsync(e => e.Id == actor.Id,tracked:false);
             if (actorinDB is null)
                 return RedirectToAction(nameof(Not_Found));
 
@@ -111,23 +135,25 @@ namespace ActorECommerce.Areas.Admin.Controllers
             {
                 actor.Img = actorinDB.Img;
             }
-            _context.Actors.Update(actor);
-            _context.SaveChanges();
+            _actorRepository.Update(actor);
+           await _actorRepository.CommitAsync();
+            TempData["notification"] = _localizer["UpdateActor"].Value;
             return RedirectToAction(nameof(Index));
         }
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var actor = _context.Actors.Find(id);
+            var actor =await _actorRepository.GetOneAsync(e => e.Id == id);
             if (actor is null)
                 return RedirectToAction(nameof(Not_Found));
             var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Imgs\\ActorImgs",
-                   actor.Img);
+                actor.Img);
             if (System.IO.File.Exists(oldPath))
             {
                 System.IO.File.Delete(oldPath);
             }
-            _context.Actors.Remove(actor);
-            _context.SaveChanges();
+            _actorRepository.Delete(actor);
+            await _actorRepository.CommitAsync();
+            TempData["notification"] = _localizer["DeleteActor"].Value;
             return RedirectToAction(nameof(Index));
         }
 

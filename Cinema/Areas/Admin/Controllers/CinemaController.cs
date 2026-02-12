@@ -1,23 +1,32 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CinemaECommerce.Repositories.IRepositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace CinemaECommerce.Areas.Admin.Controllers
 {
     [Area(SD.Admin_Area)]
     public class CinemaController : Controller
     {
-        private ApplicationDbContext _context = new();
-        public IActionResult Index(string? name, int page = 1)
+
+        private readonly IRepository<Cinema> _cinemarepository;
+        public CinemaController(ApplicationDbContext context, IRepository<Cinema> cinemarepository)
         {
-            var cinemas = _context.Cinemas.AsNoTracking().AsQueryable();
+            _cinemarepository = cinemarepository;
+        }
+
+        public async Task<IActionResult> Index(string? name, int page = 1)
+        {
+            
+            var cinemas =await _cinemarepository.GetAsync(tracked:false);
             if (name is not null)
-                cinemas = cinemas.Where(e => e.Name.ToLower().Contains(name.ToLower()));
+                cinemas = cinemas.Where(e => e.Name.ToLower().Contains(name.ToLower())).ToList();
             if (page < 1)
                 page = 1;
 
             int currentpage = page;
             double totalpages = Math.Ceiling(cinemas.Count() / 5.0);
-            cinemas = cinemas.Skip((page - 1) * 5).Take(5);
+            cinemas = cinemas.Skip((page - 1) * 5).Take(5).ToList();
             return View(new CinemaVM
             {
                 CinemaModel = cinemas.AsEnumerable(),
@@ -33,7 +42,7 @@ namespace CinemaECommerce.Areas.Admin.Controllers
             return View(new Cinema());
         }
         [HttpPost]
-        public ActionResult Create(Cinema cinema, IFormFile? img)
+        public async Task<ActionResult> Create(Cinema cinema, IFormFile? img)
         {
             ModelState.Remove("Img");
             ModelState.Remove("Movies");
@@ -51,8 +60,9 @@ namespace CinemaECommerce.Areas.Admin.Controllers
                 }
                 cinema.Img = newfilename;
             }
-            _context.Cinemas.Add(cinema);
-            _context.SaveChanges();
+           await _cinemarepository.CreateAsync(cinema);
+           await _cinemarepository.CommitAsync();
+            TempData["notification"] = "Add cinema successfully";
             return RedirectToAction(nameof(Index));
         }
         [HttpGet]
@@ -60,18 +70,22 @@ namespace CinemaECommerce.Areas.Admin.Controllers
         {
             return View();
         }
-        public IActionResult Edit([FromRoute] int id)
+        public async Task<IActionResult> Edit([FromRoute] int id)
         {
-            var cinema = _context.Cinemas.Find(id);
+            var cinema =await _cinemarepository.GetOneAsync(e=>e.Id==id);
             if (cinema is null)
                 return RedirectToAction(nameof(Not_Found));
             return View(cinema);
         }
 
         [HttpPost]
-        public IActionResult Edit(Cinema cinema, IFormFile? img)
+        public async Task<IActionResult> Edit(Cinema cinema, IFormFile? img)
         {
-            var cinemainDB = _context.Cinemas.AsNoTracking().FirstOrDefault(e => e.Id == cinema.Id);
+            ModelState.Remove("Movies");
+            ModelState.Remove("Img");
+            if (!ModelState.IsValid)
+                return View(cinema);
+            var cinemainDB =await _cinemarepository.GetOneAsync(e=>e.Id==cinema.Id,tracked:false);
             if (cinemainDB is null)
                 return RedirectToAction(nameof(Not_Found));
 
@@ -98,13 +112,14 @@ namespace CinemaECommerce.Areas.Admin.Controllers
             {
                 cinema.Img = cinemainDB.Img;
             }
-            _context.Cinemas.Update(cinema);
-            _context.SaveChanges();
+            _cinemarepository.Update(cinema);
+           await _cinemarepository.CommitAsync();
+            TempData["notification"] = "Update cinema successfully";
             return RedirectToAction(nameof(Index));
         }
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var cinema = _context.Cinemas.Find(id);
+            var cinema =await _cinemarepository.GetOneAsync(e=>e.Id == id);
             if (cinema is null)
                 return RedirectToAction(nameof(Not_Found));
             var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Imgs\\CinemaImgs",
@@ -113,8 +128,9 @@ namespace CinemaECommerce.Areas.Admin.Controllers
             {
                 System.IO.File.Delete(oldPath);
             }
-            _context.Cinemas.Remove(cinema);
-            _context.SaveChanges();
+            _cinemarepository.Delete(cinema);
+            await _cinemarepository.CommitAsync();
+            TempData["notification"] = "Delete cinema successfully";
             return RedirectToAction(nameof(Index));
         }
 

@@ -10,8 +10,7 @@ namespace CinemaECommerce.Models
         public string Name { get; set; } = string.Empty;
         [Length(7, 255)]
         public string Description { get; set; } = string.Empty;
-        [Required]
-        public string? Img { get; set; }
+        public string? Img { get; set; }=string.Empty;
         public int MovieId { get; set; } = default!;
         public Movie Movie { get; set; }
 

@@ -8,8 +8,8 @@ namespace CinemaECommerce.Models
         [Required]
         [Length(7, 20)]
         public string Name { get; set; } = string.Empty;
-        [Required]
-        public string? Img { get; set; }
+     [Required]
+        public string? Img { get; set; }= string.Empty;
         public List<Movie> Movies { get; set; }
 
 

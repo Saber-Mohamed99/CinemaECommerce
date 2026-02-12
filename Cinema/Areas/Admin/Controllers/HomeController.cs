@@ -6,7 +6,13 @@ namespace CinemaECommerce.Areas.Admin.Controllers
     [Area(SD.Admin_Area)]
     public class HomeController : Controller
     {
-        private ApplicationDbContext _context = new(); 
+        private readonly ApplicationDbContext _context;// = new(); 
+
+        public HomeController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
             var categories = _context.Categories.AsNoTracking().ToList();

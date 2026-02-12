@@ -7,19 +7,20 @@
         </div>
         <div class="card-body">
             <form method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Actor.Id"/>
                 <div class="mb-3">
                     <label for="Name" class="form-label">Actor Name</label>
-                    <input type="text" class="form-control" id="Name" name="Name"value="@Model.Actor.Name"
-                           >
+                    <input type="text" class="form-control" asp-for="Actor.Name">
+                    <span class="text-danger" asp-validation-for="Actor.Name"></span>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Actor Description</label>
-                    <textarea class="form-control" rows="2" name="Description">@Model.Actor.Description</textarea>
-
+                    <textarea class="form-control" rows="2" asp-for="Actor.Description">@Model.Actor.Description</textarea>
+                    <span class="text-danger" asp-validation-for="Actor.Description"></span>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Movie</label>
-                    <select name="MovieId" class="form-select">
+                    <select asp-for="Actor.MovieId" class="form-select">
                         @foreach (var item in Model.Movies)
                         {
                             if (Model.Actor.MovieId == item.Id)
@@ -90,3 +91,7 @@
             object-fit: cover;
         }
 </style>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial.cshtml" />
+
+}
