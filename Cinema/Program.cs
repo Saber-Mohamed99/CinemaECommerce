@@ -1,6 +1,7 @@
 
 using CinemaECommerce.Repositories.IRepositories;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -21,8 +22,11 @@ namespace CinemaECommerce
             builder.Services.AddScoped<IRepository<Cinema>, Repository<Cinema>>();
             builder.Services.AddScoped<IRepository<Actor>, Repository<Actor>>();
             builder.Services.AddScoped<IRepository<Movie>, Repository<Movie>>();
+            builder.Services.AddScoped<IRepository<ApplicationUserOTP>, Repository<ApplicationUserOTP>>();
             builder.Services.AddScoped<IMovieSubImgRepository, SubImgRepository>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
             builder.Services.AddDbContext<ApplicationDbContext>(
                 option =>
                 {
@@ -35,7 +39,10 @@ namespace CinemaECommerce
                 Options.User.RequireUniqueEmail = true;
                 Options.Password.RequiredLength = 8;
                 Options.Lockout.MaxFailedAccessAttempts = 6;
-            }).AddEntityFrameworkStores<ApplicationDbContext>();
+                Options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+                Options.SignIn.RequireConfirmedEmail = true;
+            }).AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
             const string defaultCulture = "en";
             var supportedCultures = new[]
             {
