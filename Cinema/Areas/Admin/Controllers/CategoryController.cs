@@ -1,5 +1,6 @@
 ﻿using CinemaECommerce.Models;
 using CinemaECommerce.Repositories.IRepositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 namespace CinemaECommerce.Areas.Admin.Controllers
 {
     [Area(SD.Admin_Area)]
-    public class CategoryController : Controller
+    public class CategoryController : AdminBaseController
     {
         private readonly IStringLocalizer<LocalizationController> _localizer;
         private IRepository<Category> _categoryRepository;
@@ -41,11 +42,13 @@ namespace CinemaECommerce.Areas.Admin.Controllers
            
         }
         [HttpGet]
+        [Authorize(Roles = $"{SD.Super_Admin_Role},{SD.Admin_Role}")]
         public ActionResult Create()
         {
             return View( new Category());
         }
         [HttpPost]
+        [Authorize(Roles = $"{SD.Super_Admin_Role},{SD.Admin_Role}")]
         public async Task<ActionResult> Create(Category category)
         {
             ModelState.Remove("Movies");
@@ -58,6 +61,7 @@ namespace CinemaECommerce.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
         [HttpGet]
+        [Authorize(Roles = $"{SD.Super_Admin_Role},{SD.Admin_Role}")]
         public async Task<IActionResult> Edit([FromRoute] int id)
         {
             var category =await _categoryRepository.GetOneAsync(e=>e.Id==id);
@@ -67,6 +71,7 @@ namespace CinemaECommerce.Areas.Admin.Controllers
 
         }
         [HttpPost]
+        [Authorize(Roles = $"{SD.Super_Admin_Role},{SD.Admin_Role}")]
         public async Task<IActionResult> Edit(Category category)
         {
             ModelState.Remove("Movies");
@@ -79,6 +84,7 @@ namespace CinemaECommerce.Areas.Admin.Controllers
             TempData["notification"] = _localizer["UpdateCategory"].Value;
             return RedirectToAction(nameof(Index));
         }
+        [Authorize(Roles = $"{SD.Super_Admin_Role},{SD.Admin_Role}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var category =await _categoryRepository.GetOneAsync(e => e.Id == id);

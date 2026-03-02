@@ -42,8 +42,8 @@ namespace CinemaECommerce.Repositories
             _dbSet.Remove(entity);
         }
 
-        public async Task<List<T>> GetAsync(System.Linq.Expressions.Expression<Func<T, bool>>? expression = null,
-            bool tracked = true, System.Linq.Expressions.Expression<Func<T, object>>[]? includes = null)
+        public async Task<List<T>> GetAsync(Expression<Func<T, bool>>? expression = null,
+            bool tracked = true,Expression<Func<T, object>>[]? includes = null)
         {
           var objects =_dbSet.AsQueryable();
             if(expression is not null)

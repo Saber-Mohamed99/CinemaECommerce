@@ -1,0 +1,96 @@
+﻿@model List<Cart>
+<div class="content">
+    <div class="card">
+        <div class="card-header">
+            <div class="row justify-content-between">
+                <div class="col-md-auto">
+                    <h5 class="mb-3 mb-md-0">Shopping Cart (@Model.Count() Items)</h5>
+                </div>
+                <div class="col-md-auto"><a class="btn btn-sm btn-outline-secondary border-300 me-2 shadow-none" href="/Customer/Home/Index"> <span class="fas fa-chevron-left me-1" data-fa-transform="shrink-4"></span>Continue Shopping</a><a class="btn btn-sm btn-primary" href="../../app/e-commerce/checkout.html">Checkout</a></div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="row gx-card mx-0 bg-200 text-900 fs--1 fw-semi-bold">
+                <div class="col-9 col-md-8 py-2">Name</div>
+                <div class="col-3 col-md-4">
+                    <div class="row">
+                        <div class="col-md-8 py-2 d-none d-md-block text-center">Quantity</div>
+                        <div class="col-12 col-md-4 text-end py-2">Price</div>
+                    </div>
+                </div>
+            </div>
+            @foreach(var item in Model)
+            {
+                <div class="row gx-card mx-0 align-items-center border-bottom border-200">
+                    <div class="col-8 py-3">
+                        <div class="d-flex align-items-center">
+                            <img class="img-fluid rounded-1 me-3 d-none d-md-block" src="~/Imgs/MovieImgs/@item.Movie.MainImg" alt="" width="60" />
+                            <div class="flex-1">
+                                <h5 class="fs-0"><a class="text-900" href="/Customer/Home/Details/@item.MovieId">@item.Movie.Name</a></h5>
+                                <div class="fs--2 fs-md--1"><a class="text-danger" href="/Customer/Cart/Delete?movieId=@item.MovieId">Remove</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4 py-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-8 d-flex justify-content-end justify-content-md-center order-1 order-md-0">
+                                <div>
+                                    <div class="input-group input-group-sm flex-nowrap" data-quantity="data-quantity">
+                                        <a href="/Customer/Cart/Decrement?movieId=@item.MovieId" class="btn btn-sm btn-outline-secondary border-300 px-2 shadow-none" data-type="minus">-</a>
+                                        <input class="form-control text-center px-2 input-spin-none" type="number" min="1" value="@item.Count" aria-label="Amount (to the nearest dollar)" style="width: 50px" />
+                                        <a href="/Customer/Cart/Increment?movieId=@item.MovieId" class="btn btn-sm btn-outline-secondary border-300 px-2 shadow-none" data-type="plus">+</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-end ps-0 order-0 order-md-1 mb-2 mb-md-0 text-600">$@item.Movie.Price</div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+            <div class="row fw-bold gx-card mx-0">
+                <div class="col-9 col-md-8 py-2 text-end text-900">Total</div>
+                <div class="col px-0">
+                    <div class="row gx-card mx-0">
+                        <div class="col-md-8 py-2 d-none d-md-block text-center">@Model.Count() (items)</div>
+                        @* <div class="col-12 col-md-4 text-end py-2">$8516</div> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-light d-flex justify-content-end">
+            <form class="me-3">
+                <div class="input-group input-group-sm">
+                    <input class="form-control" type="text" placeholder="Promocode" name="code" />
+                    <button class="btn btn-outline-secondary border-300 btn-sm shadow-none" type="submit">Apply</button>
+                </div>
+            </form><a class="btn btn-sm btn-primary" href="../../app/e-commerce/checkout.html">Checkout</a>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="row g-0 justify-content-between fs--1 mt-4 mb-3">
+            <div class="col-12 col-sm-auto text-center">
+                <p class="mb-0 text-600">Thank you for creating with Falcon <span class="d-none d-sm-inline-block">| </span><br class="d-sm-none" /> 2022 &copy; <a href="https://themewagon.com">Themewagon</a></p>
+            </div>
+            <div class="col-12 col-sm-auto text-center">
+                <p class="mb-0 text-600">v3.14.0</p>
+            </div>
+        </div>
+    </footer>
+</div>
+@section Scripts {
+
+    @if (@TempData["notification"] is not null)
+    {
+        <script>
+            toastr.success('@TempData["notification"]')
+        </script>
+    }
+    @if (@TempData["error-notification"] is not null)
+    {
+        <script>
+            toastr.danger('@TempData["error-notification"]')
+        </script>
+    }
+   
+}

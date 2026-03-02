@@ -1,0 +1,174 @@
+﻿@model List<Movie>
+<div class="container">
+    <main class="main" id="top">
+        <div class="container" data-layout="container">
+            <script>
+                var isFluid = JSON.parse(localStorage.getItem('isFluid'));
+                if (isFluid) {
+                  var container = document.querySelector('[data-layout]');
+                  container.classList.remove('container');
+                  container.classList.add('container-fluid');
+                }
+            </script>
+
+            <div class="content">
+
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row flex-between-center">
+                            <div class="col-sm-auto mb-2 mb-sm-0">
+                                <h6 class="mb-0">Showing 1-24 of 205 Products</h6>
+                            </div>
+                            <div class="col-sm-auto">
+                                <div class="row gx-2 align-items-center">
+                                    <div class="col-auto">
+                                        <form class="row gx-2">
+                                            <div class="col-auto"><small>Sort by:</small></div>
+                                            <div class="col-auto">
+                                                <select class="form-select form-select-sm" aria-label="Bulk actions">
+                                                    <option selected="">Best Match</option>
+                                                    <option value="Refund">Newest</option>
+                                                    <option value="Delete">Price</option>
+                                                </select>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-auto pe-0"> <a class="text-600 px-1" href="../../../app/e-commerce/product/product-list.html" data-bs-toggle="tooltip" data-bs-placement="top" title="Product List"><span class="fas fa-list-ul"></span></a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            @foreach(var item in Model)
+                            {
+                                <div class="mb-4 col-md-6 col-lg-4">
+                                    <div class="border rounded-1 h-100 d-flex flex-column justify-content-between pb-3">
+                                        <div class="overflow-hidden">
+                                            <div class="position-relative rounded-top overflow-hidden">
+                                                <a class="d-block" href="/Customer/Home/Details/@item.Id"><img class="img-fluid rounded-top" src="~/Imgs/MovieImgs/@item.MainImg" alt="" /></a><span class="badge rounded-pill bg-success position-absolute mt-2 me-2 z-index-2 top-0 end-0">New</span>
+                                            </div>
+                                            <div class="p-3">
+                                                <h5 class="fs-0">@item.Name</h5>
+                                                <p class="fs--1 mb-3"><a class="text-500" href="#!">@item.Categories.Name; @item.Cinemas.Name</a></p>
+                                                    @if (item.Discount != null)
+                                                    {
+                                                        <h5 class="fs-md-2 text-warning mb-0 d-flex align-items-center mb-3">
+                                                        @item.FinalPrice.ToString("F2") $
+                                                        <del class="ms-2 fs--1 text-500">@item.Price.ToString("f2") $</del>
+                                                        </h5>
+                                                    }
+                                                    else
+                                                    {
+                                                        <h5 class="fs-md-2 text-warning mb-0 d-flex align-items-center mb-3">
+                                                            @item.Price.ToString("f2") $
+                                                        </h5>
+                                                    }
+                                               
+                                                @if (item.Status == true)
+                                                {
+                                                    <p class="fs--1 mb-1">
+                                                        Stock: <strong class="text-success">Available</strong>
+                                                    </p>
+                                                }
+                                                else
+                                                {
+                                                    <p class="fs--1 mb-1">
+                                                        Stock: <strong class="text-danger">Sold-Out</strong>
+                                                    </p>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="d-flex flex-between-center px-3">
+                                            
+                                            <div><a class="btn btn-sm btn-falcon-default me-2" href="#!" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to Wish List"><span class="far fa-heart"></span></a>
+                                                <a class="btn btn-sm btn-falcon-default" href="/Customer/Cart/AddToCart?movieId=@item.Id&count=1" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to Cart"><span class="fas fa-cart-plus"></span></a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light d-flex justify-content-center">
+                        <div>
+                            <button class="btn btn-falcon-default btn-sm me-2" type="button" disabled="disabled" data-bs-toggle="tooltip" data-bs-placement="top" title="Prev"><span class="fas fa-chevron-left"></span></button><a class="btn btn-sm btn-falcon-default text-primary me-2" href="#!">1</a><a class="btn btn-sm btn-falcon-default me-2" href="#!">2</a><a class="btn btn-sm btn-falcon-default me-2" href="#!"> <span class="fas fa-ellipsis-h"></span></a><a class="btn btn-sm btn-falcon-default me-2" href="#!">35</a>
+                            <button class="btn btn-falcon-default btn-sm" type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Next"><span class="fas fa-chevron-right">     </span></button>
+                        </div>
+                    </div>
+                </div>
+                <footer class="footer">
+                    <div class="row g-0 justify-content-between fs--1 mt-4 mb-3">
+                        <div class="col-12 col-sm-auto text-center">
+                            <p class="mb-0 text-600">Thank you for creating with Falcon <span class="d-none d-sm-inline-block">| </span><br class="d-sm-none" /> 2022 &copy; <a href="https://themewagon.com">Themewagon</a></p>
+                        </div>
+                        <div class="col-12 col-sm-auto text-center">
+                            <p class="mb-0 text-600">v3.14.0</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+            <div class="modal fade" id="authentication-modal" tabindex="-1" role="dialog" aria-labelledby="authentication-modal-label" aria-hidden="true">
+                <div class="modal-dialog mt-6" role="document">
+                    <div class="modal-content border-0">
+                        <div class="modal-header px-5 position-relative modal-shape-header bg-shape">
+                            <div class="position-relative z-index-1 light">
+                                <h4 class="mb-0 text-white" id="authentication-modal-label">Register</h4>
+                                <p class="fs--1 mb-0 text-white">Please create your free Falcon account</p>
+                            </div>
+                            <button class="btn-close btn-close-white position-absolute top-0 end-0 mt-2 me-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body py-4 px-5">
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label" for="modal-auth-name">Name</label>
+                                    <input class="form-control" type="text" autocomplete="on" id="modal-auth-name" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="modal-auth-email">Email address</label>
+                                    <input class="form-control" type="email" autocomplete="on" id="modal-auth-email" />
+                                </div>
+                                <div class="row gx-2">
+                                    <div class="mb-3 col-sm-6">
+                                        <label class="form-label" for="modal-auth-password">Password</label>
+                                        <input class="form-control" type="password" autocomplete="on" id="modal-auth-password" />
+                                    </div>
+                                    <div class="mb-3 col-sm-6">
+                                        <label class="form-label" for="modal-auth-confirm-password">Confirm Password</label>
+                                        <input class="form-control" type="password" autocomplete="on" id="modal-auth-confirm-password" />
+                                    </div>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="modal-auth-register-checkbox" />
+                                    <label class="form-label" for="modal-auth-register-checkbox">I accept the <a href="#!">terms </a>and <a href="#!">privacy policy</a></label>
+                                </div>
+                                <div class="mb-3">
+                                    <button class="btn btn-primary d-block w-100 mt-3" type="submit" name="submit">Register</button>
+                                </div>
+                            </form>
+                            <div class="position-relative mt-5">
+                                <hr />
+                                <div class="divider-content-center">or register with</div>
+                            </div>
+                            <div class="row g-2 mt-2">
+                                <div class="col-sm-6"><a class="btn btn-outline-google-plus btn-sm d-block w-100" href="#"><span class="fab fa-google-plus-g me-2" data-fa-transform="grow-8"></span> google</a></div>
+                                <div class="col-sm-6"><a class="btn btn-outline-facebook btn-sm d-block w-100" href="#"><span class="fab fa-facebook-square me-2" data-fa-transform="grow-8"></span> facebook</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+@section Scripts {
+
+    @if (@TempData["notification"] is not null)
+    {
+        <script>
+            toastr.success('@TempData["notification"]')
+        </script>
+    }
+}

@@ -74,7 +74,7 @@
             container.classList.add('container-fluid');
           }
         </script>
-        <nav class="navbar navbar-light navbar-vertical navbar-expand-xl">
+         <nav class="navbar navbar-light navbar-vertical navbar-expand-xl">
           <script>
             var navbarStyle = localStorage.getItem("navbarStyle");
             if (navbarStyle && navbarStyle !== 'transparent') {
@@ -117,6 +117,13 @@
                      <li class="nav-item"><a class="nav-link" href="/Admin/Category">
                                             <div class="d-flex align-items-center">
                                                 <span class="nav-link-text ps-1">Category</span>
+                        </div>
+                      </a>
+                      <!-- more inner pages-->
+                    </li>
+                     <li class="nav-item"><a class="nav-link" href="/Admin/User/Create">
+                                            <div class="d-flex align-items-center">
+                                                <span class="nav-link-text ps-1">User</span>
                         </div>
                       </a>
                       <!-- more inner pages-->
@@ -2096,7 +2103,7 @@
               </div>
             </div>
           </div>
-        </nav>
+        </nav> 
         <div class="content">
           <nav class="navbar navbar-light navbar-glass navbar-top navbar-expand">
 
@@ -2225,7 +2232,7 @@
                 </div>
               </li>
               <li class="nav-item d-none d-sm-block">
-                <a class="nav-link px-0 notification-indicator notification-indicator-warning notification-indicator-fill fa-icon-wait" href="~/app/e-commerce/shopping-cart.html"><span class="fas fa-shopping-cart" data-fa-transform="shrink-7" style="font-size: 33px;"></span><span class="notification-indicator-number">1</span></a>
+                            <a class="nav-link px-0 notification-indicator notification-indicator-warning notification-indicator-fill fa-icon-wait" href="/Customer/Cart/Index"><span class="fas fa-shopping-cart" data-fa-transform="shrink-7" style="font-size: 33px;"></span><span class="notification-indicator-number">1</span></a>
 
               </li>
               <li class="nav-item dropdown">
@@ -2267,7 +2274,7 @@
                               </div>
                             </div>
                             <div class="notification-body">
-                              <p class="mb-1"><strong>Albert Brooks</strong> reacted to <strong>Mia Khalifa's</strong> status</p>
+                              <p class="mb-1"><strong>Albert Brooks</strong> reacted to <strong>Mia</strong> status</p>
                               <span class="notification-time"><span class="me-2 fab fa-gratipay text-danger"></span>9hr</span>
 
                             </div>

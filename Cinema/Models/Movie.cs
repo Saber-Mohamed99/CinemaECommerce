@@ -16,6 +16,8 @@ namespace CinemaECommerce.Models
         public bool Status { get; set; }
         [Range(100,400)]
         public decimal Price { get; set; }
+        public decimal? Discount { get; set; } = null;
+        public decimal FinalPrice =>(decimal) (Price - (Price * (Discount / 100m)));
         [CustomDate]
         public DateTime Date { get; set; }
         public int CategoryId { get; set; } = default!;

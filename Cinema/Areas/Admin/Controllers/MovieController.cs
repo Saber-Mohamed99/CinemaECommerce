@@ -1,5 +1,6 @@
 ﻿
 using CinemaECommerce.Repositories.IRepositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Build.Tasks.Deployment.Bootstrapper;
@@ -10,7 +11,8 @@ using System.Threading.Tasks;
 namespace CinemaECommerce.Areas.Admin.Controllers
 {
     [Area(SD.Admin_Area)]
-    public class MovieController : Controller
+    
+    public class MovieController : AdminBaseController
     {
         private readonly IRepository<Movie>_movieRepository;
         private readonly IRepository<Category>_categoryRepository;
@@ -63,6 +65,7 @@ namespace CinemaECommerce.Areas.Admin.Controllers
 
         }
         [HttpGet]
+        [Authorize(Roles = $"{SD.Super_Admin_Role},{SD.Admin_Role}")]
         public async Task<IActionResult> Create()
         {
             var categories = await _categoryRepository.GetAsync(tracked: false);
@@ -74,6 +77,7 @@ namespace CinemaECommerce.Areas.Admin.Controllers
             } );
         }
         [HttpPost]
+        [Authorize(Roles = $"{SD.Super_Admin_Role},{SD.Admin_Role}")]
         public async Task<IActionResult> Create(Movie movie, IFormFile? MainImg, List<IFormFile>? SubImg)
 
         {
@@ -126,6 +130,7 @@ namespace CinemaECommerce.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
         [HttpGet]
+        [Authorize(Roles = $"{SD.Super_Admin_Role},{SD.Admin_Role}")]
         public async Task<IActionResult> Edit(int id)
         {
             var movie =await _movieRepository.GetOneAsync(e=>e.Id==id);
@@ -145,6 +150,7 @@ namespace CinemaECommerce.Areas.Admin.Controllers
             });
         }
         [HttpPost]
+        [Authorize(Roles = $"{SD.Super_Admin_Role},{SD.Admin_Role}")]
         public async Task<IActionResult> Edit(Movie movie, IFormFile? MainImg, List<IFormFile>? SubImg)
         {
             ModelState.Remove("movie.MovieSubImgs");
@@ -226,6 +232,7 @@ namespace CinemaECommerce.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
 
         }
+        [Authorize(Roles = $"{SD.Super_Admin_Role},{SD.Admin_Role}")]
         public async Task<IActionResult> Delete(int id)
         {
             var movie = await _movieRepository.GetOneAsync(e => e.Id == id);

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CinemaECommerce.Areas.Admin.Controllers
 {
     [Area(SD.Admin_Area)]
-    public class HomeController : Controller
+    public class HomeController : AdminBaseController
     {
         private readonly ApplicationDbContext _context;// = new(); 
 

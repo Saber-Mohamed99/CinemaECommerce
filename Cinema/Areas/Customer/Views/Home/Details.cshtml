@@ -1,0 +1,101 @@
+﻿@model Movie
+<div class="container">
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row ">
+               <div class="col-lg-6 mb-4 mb-lg-0">
+                  <div class="main-img-wrapper mb-3">
+                        <img id="mainImage"
+                         src="~/Imgs/MovieImgs/@Model.MainImg"
+                         class="main-img" />
+                  </div>
+
+                                        <!-- الصور المصغرة -->
+                  <div class="thumbs-wrapper d-flex gap-2 flex-wrap">
+                       @foreach (var item in Model.MovieSubImgs)
+                       {
+                              <img src="~/Imgs/MovieImgs/SubImg/@item.SubImg"
+                                class="thumb-img"
+                                 onclick="changeImage(this)" />
+                       }
+                  </div>
+
+                </div>
+                <div class="col-lg-6">
+                    <h5>@Model.Name</h5><h class="fs--1 mb-2 d-block" href="#!" @Model.Categories.Name;@Model.Cinemas.Name</h>
+                    @if (Model.Discount != null)
+                    {
+                        <h5 class="fs-md-2 text-warning mb-0 d-flex align-items-center mb-3">
+                            @Model.FinalPrice.ToString("F2") $
+                            <del class="ms-2 fs--1 text-500">@Model.Price.ToString("f2") $</del><strong>-@Model.Discount%</strong>
+                        </h5>
+                    }
+                    else
+                    {
+                        <h5 class="fs-md-2 text-warning mb-0 d-flex align-items-center mb-3">
+                            @Model.Price.ToString("f2") $
+                        </h5>
+                    }
+                    @if (Model.Status == true)
+                    {
+                        <p class="fs--1">Stock: <strong class="text-success">Available</strong></p>
+                    }
+                    else
+                    {
+                        <p class="fs--1">Stock: <strong class="text-danger">Out stock</strong></p>
+
+                    }
+                    <div class="row">
+                        <div class="col-auto pe-0">
+                            <div class="input-group input-group-sm" data-quantity="data-quantity">
+                                <button class="btn btn-sm btn-outline-secondary border-300" data-field="input-quantity" data-type="minus">-</button>
+                                <input class="form-control text-center input-quantity input-spin-none" type="number" min="0" value="0" aria-label="Amount (to the nearest dollar)" style="max-width: 50px" />
+                                <button class="btn btn-sm btn-outline-secondary border-300" data-field="input-quantity" data-type="plus">+</button>
+                            </div>
+                        </div>
+                        <div class="col-auto px-2 px-md-3"><a class="btn btn-sm btn-primary" href="/Customer/Cart/AddToCart?movieId=@Model.Id&count=1"><span class="fas fa-cart-plus me-sm-2"></span><span class="d-none d-sm-inline-block">Add To Cart</span></a></div>
+                        <div class="col-auto px-0"><a class="btn btn-sm btn-outline-danger border-300" href="#!" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to Wish List"><span class="far fa-heart me-1"></span>282</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function changeImage(element) {
+        document.getElementById("mainImage").src = element.src;
+    }
+</script>
+<style>
+.main-img-wrapper {
+    width: 100%;
+    height: 450px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #f8f9fa;
+}
+
+.main-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumbs-wrapper {
+    margin-top: 10px;
+}
+
+.thumb-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: 0.3s;
+}
+
+.thumb-img:hover {
+    border-color: #0d6efd;
+    transform: scale(1.05);
+        }</style>

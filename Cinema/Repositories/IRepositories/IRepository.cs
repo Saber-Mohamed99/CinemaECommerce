@@ -11,7 +11,7 @@ namespace CinemaECommerce.Repositories.IRepositories
           bool tracked = true, Expression<Func<T, object>>[]? includes = null);
 
         Task<T> GetOneAsync(Expression<Func<T, bool>>? expression = null,
-           bool tracked = true, Expression<Func<T, object>>[]? include = null);
+           bool tracked = true, Expression<Func<T, object>>[]? includes = null);
 
         Task<int> CommitAsync();
 

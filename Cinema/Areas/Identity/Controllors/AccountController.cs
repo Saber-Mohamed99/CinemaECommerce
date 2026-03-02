@@ -61,9 +61,11 @@ namespace CinemaECommerce.Areas.Identity.Controllors
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(applicationUser);
 
             var ConfirmeLink = Url.Action("Confirm", "Account",
-                new { applicationUser.Id, token }, Request.Scheme);
+                new { applicationUser.Id, token ,Request.Scheme});
             string msg = $"<h1>Click <a href='{ConfirmeLink}'>here</a> to confirm your account</h1>";
             await _accountService.ReSendEmailAsync(MsgType.ConfirmationEmail, msg, applicationUser);
+
+            await _userManager.AddToRoleAsync(applicationUser, SD.Customer_Role);
             TempData["notification"] = "Add account successfully";
             return View("Login");
         }
@@ -143,7 +145,7 @@ namespace CinemaECommerce.Areas.Identity.Controllors
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                 var ConfirmeLink = Url.Action("Confirm", "Account",
-                    new { user.Id, token }, Request.Scheme);
+                    new { user.Id, token },Request.Scheme);
                 string msg = $"<h1>Click <a href='{ConfirmeLink}'>here</a> to confirm your account</h1>";
                 await _accountService.ReSendEmailAsync(MsgType.ResendEmail, msg, user);
             }

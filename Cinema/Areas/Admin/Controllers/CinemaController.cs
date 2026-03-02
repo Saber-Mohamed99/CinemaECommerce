@@ -1,4 +1,5 @@
 ﻿using CinemaECommerce.Repositories.IRepositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 namespace CinemaECommerce.Areas.Admin.Controllers
 {
     [Area(SD.Admin_Area)]
-    public class CinemaController : Controller
+    public class CinemaController : AdminBaseController
     {
 
         private readonly IRepository<Cinema> _cinemarepository;
@@ -37,11 +38,13 @@ namespace CinemaECommerce.Areas.Admin.Controllers
 
         }
         [HttpGet]
+        [Authorize(Roles = $"{SD.Super_Admin_Role},{SD.Admin_Role}")]
         public ActionResult Create()
         {
             return View(new Cinema());
         }
         [HttpPost]
+        [Authorize(Roles = $"{SD.Super_Admin_Role},{SD.Admin_Role}")]
         public async Task<ActionResult> Create(Cinema cinema, IFormFile? img)
         {
             ModelState.Remove("Img");
@@ -70,6 +73,8 @@ namespace CinemaECommerce.Areas.Admin.Controllers
         {
             return View();
         }
+        [HttpGet]
+        [Authorize(Roles = $"{SD.Super_Admin_Role},{SD.Admin_Role}")]
         public async Task<IActionResult> Edit([FromRoute] int id)
         {
             var cinema =await _cinemarepository.GetOneAsync(e=>e.Id==id);
@@ -77,7 +82,7 @@ namespace CinemaECommerce.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Not_Found));
             return View(cinema);
         }
-
+        [Authorize(Roles = $"{SD.Super_Admin_Role},{SD.Admin_Role}")]
         [HttpPost]
         public async Task<IActionResult> Edit(Cinema cinema, IFormFile? img)
         {
@@ -117,6 +122,7 @@ namespace CinemaECommerce.Areas.Admin.Controllers
             TempData["notification"] = "Update cinema successfully";
             return RedirectToAction(nameof(Index));
         }
+        [Authorize(Roles = $"{SD.Super_Admin_Role},{SD.Admin_Role}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var cinema =await _cinemarepository.GetOneAsync(e=>e.Id == id);

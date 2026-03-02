@@ -1,5 +1,6 @@
 
 using CinemaECommerce.Repositories.IRepositories;
+using CinemaECommerce.Utilities.DbInitialization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
@@ -18,11 +19,15 @@ namespace CinemaECommerce
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<IDbInitializer, DbInitializer>();
             builder.Services.AddScoped<IRepository<Category>, Repository<Category>>();
             builder.Services.AddScoped<IRepository<Cinema>, Repository<Cinema>>();
+            builder.Services.AddScoped<IRepository<Cart>, Repository<Cart>>();
             builder.Services.AddScoped<IRepository<Actor>, Repository<Actor>>();
             builder.Services.AddScoped<IRepository<Movie>, Repository<Movie>>();
             builder.Services.AddScoped<IRepository<ApplicationUserOTP>, Repository<ApplicationUserOTP>>();
+            builder.Services.AddScoped<IRepository<ApplicationUser>, Repository<ApplicationUser>>();
+            builder.Services.AddScoped<IRepository<Promotion>, Repository<Promotion>>();
             builder.Services.AddScoped<IMovieSubImgRepository, SubImgRepository>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -43,6 +48,11 @@ namespace CinemaECommerce
                 Options.SignIn.RequireConfirmedEmail = true;
             }).AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+            builder.Services.ConfigureApplicationCookie(
+                Options =>
+                {
+                    Options.LoginPath = "/Identity/Account/Login";
+                });
             const string defaultCulture = "en";
             var supportedCultures = new[]
             {
@@ -67,14 +77,16 @@ namespace CinemaECommerce
 
             app.UseHttpsRedirection();
             app.UseRouting();
-
+           
             app.UseAuthorization();
             app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
-
+            var scope = app.Services.CreateScope();
+            var service = scope.ServiceProvider.GetService<IDbInitializer>();
+            service.Initialize();
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{area=Admin}/{controller=Home}/{action=Index}/{id?}")
+                pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

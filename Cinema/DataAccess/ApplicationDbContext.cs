@@ -14,9 +14,9 @@ namespace CinemaECommerce.DataAccess
         public DbSet<Cinema> Cinemas { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Actor> Actors { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<Promotion> Promotions { get; set; }
         public DbSet<ApplicationUserOTP> applicationUserOTPs  { get; set; }
-        public DbSet<CinemaECommerce.ViewModels.ValidateOTPVM> ValidateOTPVM { get; set; } = default!;
-        public DbSet<CinemaECommerce.ViewModels.ResetPasswordVM> ResetPasswordVM { get; set; } = default!;
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
         //    base.OnConfiguring(optionsBuilder);
