@@ -1,4 +1,5 @@
 ﻿using CinemaECommerce.Repositories.IRepositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 namespace CinemaECommerce.Areas.Customer.Controllors
 {
     [Area(SD.Customer_Area)]
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly IRepository<Movie> _movierepository;

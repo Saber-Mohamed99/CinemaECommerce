@@ -64,7 +64,7 @@
                     <input class="form-control" type="text" placeholder="Promocode" name="code" />
                     <button class="btn btn-outline-secondary border-300 btn-sm shadow-none" type="submit">Apply</button>
                 </div>
-            </form><a class="btn btn-sm btn-primary" href="../../app/e-commerce/checkout.html">Checkout</a>
+            </form><a class="btn btn-sm btn-primary" href="/Customer/Cart/Pay">Checkout</a>
         </div>
     </div>
     <footer class="footer">
@@ -89,7 +89,7 @@
     @if (@TempData["error-notification"] is not null)
     {
         <script>
-            toastr.danger('@TempData["error-notification"]')
+            toastr.error('@TempData["error-notification"]')
         </script>
     }
    

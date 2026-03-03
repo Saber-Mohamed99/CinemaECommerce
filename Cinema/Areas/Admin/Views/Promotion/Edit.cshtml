@@ -1,0 +1,37 @@
+﻿@model Promotion
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">Update Promotion</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <div class="mb-3">
+                    <label class="form-label">Promotion code</label>
+                    <input type="text" class="form-control" name="Code" value="@Model.Code">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Movie Id </label>
+                    <input type="number" class="form-control" name="MovieId" value="@Model.MovieId">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Discount</label>
+                    <input type="number" class="form-control" name="Discount" value="@Model.Discount">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">MaxUsage</label>
+                    <input type="number" class="form-control" name="MaxUsage" value="@Model.MaxUsage">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">DeadLine</label>
+                    <input type="datetime" class="form-control" name="ExpireAt" value="@Model.ExpireAt">
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="/Admin/Promotion/Index" class="btn btn-secondary">Back</a>
+                    <button type="submit" class="btn btn-success">Update Promotion</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

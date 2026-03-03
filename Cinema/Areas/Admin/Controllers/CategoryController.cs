@@ -53,8 +53,7 @@ namespace CinemaECommerce.Areas.Admin.Controllers
         {
             ModelState.Remove("Movies");
             if (!ModelState.IsValid) return View(category);
-            //_context.Categories.Add(category);
-            //_context.SaveChanges();
+           
             await _categoryRepository.CreateAsync(category);
            await _categoryRepository.CommitAsync();
             TempData["notification"] = _localizer["AddCategory"].Value;

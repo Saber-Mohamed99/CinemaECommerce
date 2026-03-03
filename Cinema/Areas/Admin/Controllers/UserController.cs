@@ -14,12 +14,40 @@ namespace CinemaECommerce.Areas.Admin.Controllers
 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IAccountService _accountService;
+        private readonly IRepository<ApplicationUser> _apllicationUserRepository;
 
-        public UserController(UserManager<ApplicationUser> userManager, IAccountService accountService)
+        public UserController(UserManager<ApplicationUser> userManager, IAccountService accountService,
+            IRepository<ApplicationUser> apllicationUserRepository)
         {
             _userManager = userManager;
             _accountService = accountService;
+            _apllicationUserRepository = apllicationUserRepository;
         }
+        //public async Task<IActionResult> Index(string? userName, int page = 1)
+        //{
+           
+        //    var users = await _apllicationUserRepository.GetAsync(tracked: false);
+        //    foreach (var user in users)
+        //    {
+        //        var roles = await _userManager.GetRolesAsync(user);
+        //    }
+        //    if (userName is not null)
+        //        users = users.Where(e => e.UserName.ToLower().Contains(userName.ToLower())).ToList();
+        //    if (page < 1)
+        //        page = 1;
+
+        //    int currentpage = page;
+        //    double totalpages = Math.Ceiling(users.Count() / 5.0);
+        //    users = users.Skip((page - 1) * 5).Take(5).ToList();
+        //    return View(new UserVM
+        //    {
+        //        UserModel = users.AsEnumerable(),
+        //        CurrentPage = currentpage,
+        //        TotalPages = totalpages,
+        //    });
+
+
+        //}
         [HttpGet]
         public IActionResult Create()
         {

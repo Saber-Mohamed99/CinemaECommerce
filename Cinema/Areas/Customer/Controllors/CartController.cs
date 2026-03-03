@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Stripe.Checkout;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -29,30 +30,35 @@ namespace CinemaECommerce.Areas.Customer.Controllors
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
             var carts = await _cartRepository.GetAsync(e => e.ApplicationUserId == user.Id, includes: [e => e.Movie]);
-            if(code is not null)
+            bool movieFound = false;
+            if (code is not null)
             {
                 var promotions =await _promotionRepository.GetAsync(e => e.Code == code);
                 var movieIds = promotions.Select(e => e.MovieId);
                 var discount= promotions.Select(e=>e.Discount).FirstOrDefault()/100m;
-                bool movieFound = false;
                 foreach(var item in carts)
                 {
                     if (movieIds.Contains(item.MovieId))
                     {
-                        item.ListPrice-=(item.Movie.Price*discount);
-                        movieFound = true;
-                        promotions.Where(e => e.MovieId == item.MovieId).FirstOrDefault().MaxUsage--;
-                        await _promotionRepository.CommitAsync();
-                       await _cartRepository.CommitAsync();
-                        TempData["notification"] = $"Apply {code} successfully";
-                        break;
+                        var isValid = promotions.Where(e => e.MovieId == item.MovieId).FirstOrDefault().IsValid;
+                        if (isValid)
+                        {
+                            item.ListPrice -= (item.Movie.Price * discount);
+                            promotions.Where(e => e.MovieId == item.MovieId).FirstOrDefault().MaxUsage--;
+                            movieFound = true;
+                            await _promotionRepository.CommitAsync();
+                            await _cartRepository.CommitAsync();
+                            TempData["notification"] = $"Apply {code} successfully";
+                            break;
+                        }
                     }
                 }
-                if(!movieFound)
+               
+            } 
+            if(!movieFound)
                 {
-                    TempData["error-notification"] = $"Can not apply {code} to this movie";
+                    TempData["error-notification"] = $"Can not apply {code} to your cart";
                 }
-            }
             return View(carts);
         }
         public async Task<IActionResult> AddToCart(int movieId, int count)
@@ -120,6 +126,43 @@ namespace CinemaECommerce.Areas.Customer.Controllors
             await _cartRepository.CommitAsync();
             TempData["notification"] = "Delete cart successfully";
             return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> Pay()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            var options = new SessionCreateOptions
+            {
+                PaymentMethodTypes = new List<string> { "card" },
+                LineItems = new List<SessionLineItemOptions>(),
+                Mode = "payment",
+                SuccessUrl = $"{Request.Scheme}://{Request.Host}/Customer/checkout/success",
+                CancelUrl = $"{Request.Scheme}://{Request.Host}/Customer/checkout/cancel",
+            };
+            var carts = await _cartRepository.GetAsync(e => e.ApplicationUserId == user.Id,includes: [e=>e.Movie]);
+            foreach(var item in carts)
+            {
+                options.LineItems.Add(
+                new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        Currency ="usd",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.Movie.Name,
+                            Description = item.Movie.Description,
+                        },
+                        UnitAmount =(long) item.Movie.Price * 100 ,
+                    },
+                    Quantity = item.Count,
+                }
+                );
+            }
+            var service = new SessionService();
+            var session = service.Create(options);
+            return Redirect(session.Url);
         }
     }
 }
